@@ -1,17 +1,23 @@
 version: v1
 plugins:
   - name: go
-    out: .
+    out: api
     opt:
       - paths=source_relative
   - name: go-grpc
-    out: .
+    out: api
     opt:
       - paths=source_relative
   - name: grpc-gateway
-    out: .
+    out: api
     opt:
       - paths=source_relative
-      - allow_repeated_fields_in_body=true
       - generate_unbound_methods=true
       - logtostderr=true
+  - name: openapiv2
+    out: api
+    opt:
+      - generate_unbound_methods=true
+      - logtostderr=true
+      - allow_merge=true
+    strategy: all    
