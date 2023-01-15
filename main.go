@@ -20,13 +20,13 @@ import (
 	// database driver
 	_ "github.com/jackc/pgx/v4/stdlib"
 
-	"immut-apt/internal/server"
-	"immut-apt/internal/server/trace"
+	"immut-api/internal/server"
+	"immut-api/internal/server/trace"
 )
 
 //go:generate sqlc-grpc -m gsrv/postgres/postgres -append
 
-const serviceName = "immut-apt"
+const serviceName = "immut-api"
 
 var (
 	dbURL string

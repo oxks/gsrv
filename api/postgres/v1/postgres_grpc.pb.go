@@ -23,8 +23,6 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PostgresServiceClient interface {
 	AllDatum(ctx context.Context, in *AllDatumRequest, opts ...grpc.CallOption) (*AllDatumResponse, error)
-	DatumAdd(ctx context.Context, in *DatumAddRequest, opts ...grpc.CallOption) (*DatumAddResponse, error)
-	GetDatums(ctx context.Context, in *GetDatumsRequest, opts ...grpc.CallOption) (*GetDatumsResponse, error)
 }
 
 type postgresServiceClient struct {
@@ -44,31 +42,11 @@ func (c *postgresServiceClient) AllDatum(ctx context.Context, in *AllDatumReques
 	return out, nil
 }
 
-func (c *postgresServiceClient) DatumAdd(ctx context.Context, in *DatumAddRequest, opts ...grpc.CallOption) (*DatumAddResponse, error) {
-	out := new(DatumAddResponse)
-	err := c.cc.Invoke(ctx, "/postgres.v1.PostgresService/DatumAdd", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *postgresServiceClient) GetDatums(ctx context.Context, in *GetDatumsRequest, opts ...grpc.CallOption) (*GetDatumsResponse, error) {
-	out := new(GetDatumsResponse)
-	err := c.cc.Invoke(ctx, "/postgres.v1.PostgresService/GetDatums", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // PostgresServiceServer is the server API for PostgresService service.
 // All implementations must embed UnimplementedPostgresServiceServer
 // for forward compatibility
 type PostgresServiceServer interface {
 	AllDatum(context.Context, *AllDatumRequest) (*AllDatumResponse, error)
-	DatumAdd(context.Context, *DatumAddRequest) (*DatumAddResponse, error)
-	GetDatums(context.Context, *GetDatumsRequest) (*GetDatumsResponse, error)
 	mustEmbedUnimplementedPostgresServiceServer()
 }
 
@@ -78,12 +56,6 @@ type UnimplementedPostgresServiceServer struct {
 
 func (UnimplementedPostgresServiceServer) AllDatum(context.Context, *AllDatumRequest) (*AllDatumResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllDatum not implemented")
-}
-func (UnimplementedPostgresServiceServer) DatumAdd(context.Context, *DatumAddRequest) (*DatumAddResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DatumAdd not implemented")
-}
-func (UnimplementedPostgresServiceServer) GetDatums(context.Context, *GetDatumsRequest) (*GetDatumsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDatums not implemented")
 }
 func (UnimplementedPostgresServiceServer) mustEmbedUnimplementedPostgresServiceServer() {}
 
@@ -116,42 +88,6 @@ func _PostgresService_AllDatum_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PostgresService_DatumAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DatumAddRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PostgresServiceServer).DatumAdd(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/postgres.v1.PostgresService/DatumAdd",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostgresServiceServer).DatumAdd(ctx, req.(*DatumAddRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PostgresService_GetDatums_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetDatumsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PostgresServiceServer).GetDatums(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/postgres.v1.PostgresService/GetDatums",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostgresServiceServer).GetDatums(ctx, req.(*GetDatumsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // PostgresService_ServiceDesc is the grpc.ServiceDesc for PostgresService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -162,14 +98,6 @@ var PostgresService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AllDatum",
 			Handler:    _PostgresService_AllDatum_Handler,
-		},
-		{
-			MethodName: "DatumAdd",
-			Handler:    _PostgresService_DatumAdd_Handler,
-		},
-		{
-			MethodName: "GetDatums",
-			Handler:    _PostgresService_GetDatums_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -8,9 +8,9 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	pb_postgres "immut-apt/api/postgres/v1"
-	"immut-apt/internal/server"
-	app_postgres "immut-apt/postgres"
+	pb_postgres "immut-api/api/postgres/v1"
+	"immut-api/internal/server"
+	app_postgres "immut-api/postgres"
 )
 
 func registerServer(logger *zap.Logger, db *sql.DB) server.RegisterServer {

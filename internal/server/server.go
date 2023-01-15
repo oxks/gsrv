@@ -29,7 +29,7 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/proto"
 
-	"immut-apt/internal/server/middleware"
+	"immut-api/internal/server/middleware"
 )
 
 const (

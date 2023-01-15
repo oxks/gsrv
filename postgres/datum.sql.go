@@ -11,84 +11,47 @@ import (
 	"time"
 )
 
-const datumAdd = `-- name: DatumAdd :exec
-INSERT INTO "public"."datum" ("author_id", "datum", "hash", "created_at", "previous_hash") 
-VALUES ($1, $2, $3, $4, $5)
-`
-
-type DatumAddParams struct {
-	AuthorID     int64          `json:"author_id"`
-	Datum        string         `json:"datum"`
-	Hash         sql.NullString `json:"hash"`
-	CreatedAt    time.Time      `json:"created_at"`
-	PreviousHash sql.NullString `json:"previous_hash"`
-}
-
-func (q *Queries) DatumAdd(ctx context.Context, arg DatumAddParams) error {
-	_, err := q.db.ExecContext(ctx, datumAdd,
-		arg.AuthorID,
-		arg.Datum,
-		arg.Hash,
-		arg.CreatedAt,
-		arg.PreviousHash,
-	)
-	return err
-}
-
-const getDatums = `-- name: GetDatums :many
+const allDatum = `-- name: AllDatum :many
 SELECT
-datum.id, author_id, datum, previous_hash, hash, datum.created_at, users.id, firstname, lastname, email, password, deleted, nickname, users.created_at
+	datum.datum, 
+	datum.previous_hash, 
+	datum.hash, 
+	datum.created_at, 
+	users.firstname, 
+	users.lastname
 FROM
 	datum
 	INNER JOIN
 	users
 	ON 
 		datum.author_id = users."id"
-ORDER BY
-	datum."id" DESC
 `
 
-type GetDatumsRow struct {
-	ID           int64          `json:"id"`
-	AuthorID     int64          `json:"author_id"`
+type AllDatumRow struct {
 	Datum        string         `json:"datum"`
 	PreviousHash sql.NullString `json:"previous_hash"`
 	Hash         sql.NullString `json:"hash"`
 	CreatedAt    time.Time      `json:"created_at"`
-	ID_2         int64          `json:"id_2"`
 	Firstname    string         `json:"firstname"`
 	Lastname     string         `json:"lastname"`
-	Email        string         `json:"email"`
-	Password     string         `json:"password"`
-	Deleted      bool           `json:"deleted"`
-	Nickname     string         `json:"nickname"`
-	CreatedAt_2  time.Time      `json:"created_at_2"`
 }
 
-func (q *Queries) GetDatums(ctx context.Context) ([]GetDatumsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getDatums)
+func (q *Queries) AllDatum(ctx context.Context) ([]AllDatumRow, error) {
+	rows, err := q.db.QueryContext(ctx, allDatum)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetDatumsRow
+	var items []AllDatumRow
 	for rows.Next() {
-		var i GetDatumsRow
+		var i AllDatumRow
 		if err := rows.Scan(
-			&i.ID,
-			&i.AuthorID,
 			&i.Datum,
 			&i.PreviousHash,
 			&i.Hash,
 			&i.CreatedAt,
-			&i.ID_2,
 			&i.Firstname,
 			&i.Lastname,
-			&i.Email,
-			&i.Password,
-			&i.Deleted,
-			&i.Nickname,
-			&i.CreatedAt_2,
 		); err != nil {
 			return nil, err
 		}

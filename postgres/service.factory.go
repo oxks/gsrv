@@ -5,7 +5,7 @@ package postgres
 import (
 	"go.uber.org/zap"
 
-	pb "immut-apt/api/postgres/v1"
+	pb "immut-api/api/postgres/v1"
 )
 
 // NewService is a constructor of a pb.PostgresServiceServer implementation.

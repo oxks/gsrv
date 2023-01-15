@@ -6,7 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	pb "immut-apt/api/postgres/v1"
+	pb "immut-api/api/postgres/v1"
 )
 
 func toAllDatumRow(in AllDatumRow) *pb.AllDatumRow {
@@ -22,29 +22,5 @@ func toAllDatumRow(in AllDatumRow) *pb.AllDatumRow {
 	out.CreatedAt = timestamppb.New(in.CreatedAt)
 	out.Firstname = in.Firstname
 	out.Lastname = in.Lastname
-	return out
-}
-
-func toGetDatumsRow(in GetDatumsRow) *pb.GetDatumsRow {
-
-	out := new(pb.GetDatumsRow)
-	out.Id = in.ID
-	out.AuthorId = in.AuthorID
-	out.Datum = in.Datum
-	if in.PreviousHash.Valid {
-		out.PreviousHash = wrapperspb.String(in.PreviousHash.String)
-	}
-	if in.Hash.Valid {
-		out.Hash = wrapperspb.String(in.Hash.String)
-	}
-	out.CreatedAt = timestamppb.New(in.CreatedAt)
-	out.Id_2 = in.ID_2
-	out.Firstname = in.Firstname
-	out.Lastname = in.Lastname
-	out.Email = in.Email
-	out.Password = in.Password
-	out.Deleted = in.Deleted
-	out.Nickname = in.Nickname
-	out.CreatedAt_2 = timestamppb.New(in.CreatedAt_2)
 	return out
 }
