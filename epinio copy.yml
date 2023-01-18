@@ -1,0 +1,7 @@
+configuration:
+  environment:
+    POSTGRES_DBNAME: immut
+    POSTGRES_HOST:  
+    POSTGRES_PASSWORD:  
+    POSTGRES_PORT: 5432
+    POSTGRES_USER: postgres

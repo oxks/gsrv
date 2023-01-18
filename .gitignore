@@ -20,5 +20,6 @@ postgres/query
 Makefile
 go.mod
 go.sum
-
+epinio.yaml
+.env
 

@@ -6,7 +6,6 @@ import (
 	"context"
 	"database/sql"
 	_ "embed"
-	"flag"
 	"fmt"
 	"os"
 	"os/signal"
@@ -19,6 +18,7 @@ import (
 
 	// database driver
 	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/joho/godotenv"
 
 	"immut-api/internal/server"
 	"immut-api/internal/server/trace"
@@ -40,17 +40,28 @@ func main() {
 		ServiceName: serviceName,
 	}
 	var dev bool
-	flag.StringVar(&dbURL, "db", "", "The Database connection URL")
-	flag.IntVar(&cfg.Port, "port", 5000, "The server port")
-	flag.IntVar(&cfg.PrometheusPort, "prometheusPort", 0, "The metrics server port")
-	flag.StringVar(&cfg.JaegerCollector, "jaegerCollector", "", "The Jaeger Tracing Collector endpoint (example: http://localhost:14268/api/traces)")
-	flag.StringVar(&cfg.Cert, "cert", "", "The path to the server certificate file in PEM format")
-	flag.StringVar(&cfg.Key, "key", "", "The path to the server private key in PEM format")
-	flag.BoolVar(&cfg.EnableCors, "cors", false, "Enable CORS middleware")
-	flag.BoolVar(&cfg.EnableGrpcUI, "grpcui", false, "Serve gRPC Web UI")
-	flag.BoolVar(&dev, "dev", false, "Set logger to development mode")
 
-	flag.Parse()
+	// the var definition section below will be replaced by sqlc-grpc
+
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file")
+	}
+
+	dbPassword := os.Getenv("POSTGRES_PASSWORD")
+	dbHost := os.Getenv("POSTGRES_HOST")
+	dbPort := os.Getenv("POSTGRES_PORT")
+
+	dbURL = "postgres://postgres:" + dbPassword + "@" + dbHost + ":" + dbPort + "/immut?sslmode=disable"
+
+	cfg.Port = 8080
+	cfg.PrometheusPort = 0   // 8081
+	cfg.JaegerCollector = "" // "http://localhost:30068/api/traces"
+	cfg.Cert = ""
+	cfg.Key = ""
+	cfg.EnableCors = false
+	cfg.EnableGrpcUI = true
+	dev = false
 
 	log := logger(dev)
 	defer log.Sync()
